@@ -1,0 +1,13 @@
+https://medium.com/the-techlife/building-a-knowledge-base-part-1-extracting-data-by-web-scraping-fc3e9240c8fc
+https://business.adobe.com/blog/basics/learn-about-product-detail-pages
+
+
+Each product detail page has a main tag.
+In main tag, these are the sections/classes of interest to me:
+    productPanel = soup.find('section', id='productPanel')
+    productDetails = soup.find('div', class_='productDetailsOverviewDynamic')
+    productTabbedFeatures = soup.find('section', id='tabbedFeatures')
+    productSpecs = soup.find('div', id=lambda x: x and x.endswith('specs'))
+    productSurveyResults = soup.find('section', id='marketSurveyResults')
+    productReviews = soup.find('section', id='customer-reviews')
+    formRadio_options = soup.find_all('input', attrs={'name':'mattressSizeOptions'})
