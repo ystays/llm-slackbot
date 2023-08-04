@@ -23,7 +23,7 @@ def init_with_website_and_upload_vectors(embeddings):
     html_docs = html_splitter.split_documents(documents)
     docsearch = Pinecone.from_documents(html_docs, embeddings, index_name=os.environ['PINECONE_INDEX_NAME'])
 
-if __name__ == "__main__as":
+if __name__ == "__main__":
     load_dotenv()
     embeddings = OpenAIEmbeddings()
 
