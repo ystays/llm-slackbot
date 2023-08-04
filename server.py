@@ -19,6 +19,8 @@ print(response["user_id"])
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
 flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
+chat_histories = {}
+
 
 # Decorator for handling direct bot message events
 @app.event("message")
@@ -32,6 +34,8 @@ def handle_direct_message(event, say):
         else:
             result, chat_history_new = query_similarity_search_QA_w_sources_OpenAI_Model(user_input)
             chat_histories[user_id] = [chat_history_new]
+        if len(chat_histories) > 1000:
+            chat_histories = {}
         say(result)
 
 @flask_app.route("/slack/events", methods=["POST"])
@@ -57,7 +61,6 @@ if __name__ == "__main__":
         api_key=str(os.environ['PINECONE_API_KEY']),  
         environment=str(os.environ['PINECONE_ENV'])  
     )
-    chat_histories = {}
     flask_app.run(port=3000)
     print("flask app running")
 
