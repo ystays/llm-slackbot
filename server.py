@@ -15,12 +15,16 @@ slack_client = WebClient(token=os.getenv("SLACK_BOT_TOKEN"))
 response = slack_client.auth_test()
 print(response["user_id"])
 
+pinecone.init(
+    api_key=str(os.environ['PINECONE_API_KEY']),  
+    environment=str(os.environ['PINECONE_ENV'])  
+)
 
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
 flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
-chat_histories = {}
 
+chat_histories = {}
 
 # Decorator for handling direct bot message events
 @app.event("message")
@@ -28,6 +32,8 @@ def handle_direct_message(event, say):
     if event.get("subtype") is None and event.get("channel_type") == "im":
         user_input = event["text"]
         user_id = event["user"]
+            
+        global chat_histories
         if user_id in chat_histories:
             result, chat_history_new = query_similarity_search_QA_w_sources_OpenAI_Model(user_input, chat_histories[user_id])
             chat_histories[user_id].append(chat_history_new)
@@ -61,6 +67,7 @@ if __name__ == "__main__":
         api_key=str(os.environ['PINECONE_API_KEY']),  
         environment=str(os.environ['PINECONE_ENV'])  
     )
+    #chat_histories={}
     flask_app.run(port=3000)
     print("flask app running")
 
