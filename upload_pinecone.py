@@ -9,8 +9,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter, Language
 from langchain.document_loaders.sitemap import SitemapLoader
 
 
-def init_with_dir_and_upload_vectors(embeddings):
-    loader = DirectoryLoader('../output', glob='**/*.txt', show_progress=True)
+def init_with_dir_and_upload_vectors(embeddings, file_dir='../output'):
+    loader = DirectoryLoader(file_dir, glob='**/*.txt', show_progress=True)
     documents = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=700, chunk_overlap=0)
     docs = text_splitter.split_documents(documents)
@@ -33,5 +33,7 @@ if __name__ == "__main__as":
         environment=os.environ['PINECONE_ENV']  # next to api key in console
     )
 
-    # init_with_dir_and_upload_vectors(embeddings)
+    n = input("Do you want to load the documents and upload the vectors to Pinecone? (y/n)")
+    if n == 'y':
+        init_with_dir_and_upload_vectors(embeddings)
     # init_with_website_and_upload_vectors(embeddings)

@@ -1,14 +1,12 @@
 
 import os
 from slack_sdk import WebClient
-from slack_sdk.errors import SlackApiError
 from slack_bolt.adapter.flask import SlackRequestHandler
 from slack_bolt import App
 from dotenv import find_dotenv, load_dotenv
 from flask import Flask, request, render_template
 
 import pinecone
-
 from query_llm import query_similarity_search_QA_w_sources_OpenAI_Model
 
 

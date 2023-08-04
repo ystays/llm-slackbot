@@ -68,9 +68,6 @@ def save_all_urls(csv_file_name):
                             # Add the link URL to the set of visited URLs
                             visited_urls.add(link_url)
 
-                            # Write the link URL to the CSV file
-                            # csv_writer.writerow([link_url])
-
             # Print an error message if the response was not successful
             else:
                 print('Error: ' + str(response.status_code))
@@ -81,14 +78,12 @@ def save_all_urls(csv_file_name):
             print('Error: ' + str(e))
 
     sorted_urls = sorted(visited_urls)
+    # Write the link URLs to the CSV file
     for url in sorted_urls:
         csv_writer.writerow([url])
 
     # Close the CSV file
     csv_file.close()
-
-
-
 
 def check_for_url_duplicates():
     url_set = set()
@@ -171,9 +166,7 @@ def access_html_and_parse(urls_csv_file_name):
                 productFaq = convert_to_text(productFaq)
                     
                 # productSurveyResults = soup.find('section', id='marketSurveyResults')
-                    
                 # productReviews = soup.find('section', id='customer-reviews')
-                
                 # productSelectSize = soup.find('div', class_='productPanel__selectSize')
 
                 formRadio_options = soup.find_all('input', attrs={'name':'mattressSizeOptions'})
@@ -227,6 +220,6 @@ def access_html_and_parse(urls_csv_file_name):
 if __name__ == "__main__":
     n = input("Are you sure you want to initialize scraping data? (y/n)")
     if n == 'y':
-        save_all_urls('links_pdp.csv')
+        save_all_urls('./csv/links_pdp.csv')
         check_for_url_duplicates()
-        access_html_and_parse('links_pdp.csv')
+        access_html_and_parse('./csv/links_pdp.csv')
