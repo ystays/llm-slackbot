@@ -4,7 +4,7 @@ import csv
 from urllib.parse import urlparse, urljoin
 import os
 
-def save_all_urls():
+def save_all_urls(csv_file_name):
     # Set the starting URL
     base_url = 'https://saatva.com/'
 
@@ -20,7 +20,7 @@ def save_all_urls():
     base_domain = urlparse(base_url).netloc
 
     # Initialize the CSV writer
-    csv_file = open('links_pdp.csv', 'w', newline='')
+    csv_file = open(csv_file_name, 'w', newline='')
     csv_writer = csv.writer(csv_file)
 
     print(base_domain)
@@ -114,14 +114,14 @@ def convert_to_text(x, separator='\n'):
     else:
         return ""
 
-def access_html_and_parse():
+def access_html_and_parse(urls_csv_file_name):
     # Create the data_output directory if it does not already exist
     if not os.path.exists('../output'):
         os.makedirs('../output')
 
     counter = 0
 
-    with open('links_pdp.csv', 'r') as csvfile:
+    with open(urls_csv_file_name, 'r') as csvfile:
         reader = csv.reader(csvfile)
 
         for row in reader:
@@ -227,6 +227,6 @@ def access_html_and_parse():
 if __name__ == "__main__":
     n = input("Are you sure you want to initialize scraping data? (y/n)")
     if n == 'y':
-        save_all_urls()
+        save_all_urls('links_pdp.csv')
         check_for_url_duplicates()
-        access_html_and_parse()
+        access_html_and_parse('links_pdp.csv')
