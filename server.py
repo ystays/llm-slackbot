@@ -9,6 +9,7 @@ from flask import Flask, request, render_template
 import pinecone
 from query_llm import query_similarity_search_QA_w_sources_OpenAI_Model
 
+from slack_sdk.errors import SlackApiError
 
 load_dotenv()
 slack_client = WebClient(token=os.getenv("SLACK_BOT_TOKEN"))
@@ -24,24 +25,54 @@ app = App(token=os.environ["SLACK_BOT_TOKEN"])
 flask_app = Flask(__name__)
 handler = SlackRequestHandler(app)
 
-chat_histories = {}
-
 # Decorator for handling direct bot message events
 @app.event("message")
 def handle_direct_message(event, say):
     if event.get("subtype") is None and event.get("channel_type") == "im":
         user_input = event["text"]
         user_id = event["user"]
-            
-        global chat_histories
-        if user_id in chat_histories:
-            result, chat_history_new = query_similarity_search_QA_w_sources_OpenAI_Model(user_input, chat_histories[user_id])
-            chat_histories[user_id].append(chat_history_new)
-        else:
-            result, chat_history_new = query_similarity_search_QA_w_sources_OpenAI_Model(user_input)
-            chat_histories[user_id] = [chat_history_new]
-        if len(chat_histories) > 1000:
-            chat_histories = {}
+        
+        try:
+            result = slack_client.conversations_history(channel=event["channel"], limit=16)
+            chat_history = result["messages"]
+            #print(chat_history)
+        except SlackApiError as e:
+            print("Error creating conversation: {}".format(e))
+
+        n = len(chat_history)
+        i = 1
+        formattedChatHistory = []
+        questionAndAnswer = {}
+        while i < n:
+            msg = chat_history[i]
+            if "type" in msg and msg["type"] == "message" and "text" in msg:
+                if "bot_id" in msg:
+                    # case 1: there is an existing answer
+                    if "answer" in questionAndAnswer:
+                        formattedChatHistory.append(("", questionAndAnswer["answer"]))
+                        questionAndAnswer = {"answer": msg["text"]}
+                    # case 2: there is an existing question
+                    elif "question" in questionAndAnswer: 
+                        formattedChatHistory.append((questionAndAnswer["question"], msg["text"]))
+                        questionAndAnswer = {}
+                    else: # case 3: no existing question or answer
+                        questionAndAnswer = {"answer": msg["text"]}
+                elif "client_msg_id" in msg:
+                    # case 1: there is an existing answer
+                    if "answer" in questionAndAnswer:
+                        formattedChatHistory.append((msg["text"], questionAndAnswer["answer"]))
+                        questionAndAnswer = {}
+                    # case 2: there is an existing question
+                    elif "question" in questionAndAnswer: 
+                        formattedChatHistory.append((questionAndAnswer["question"], ""))
+                        questionAndAnswer = {"question": msg["text"]}
+                    else: # case 3: no existing question or answer
+                        questionAndAnswer = {"question": msg["text"]}
+                        
+
+            i+=1
+        print(formattedChatHistory)
+        result, chat_history_new = query_similarity_search_QA_w_sources_OpenAI_Model(user_input, formattedChatHistory)
         say(result)
 
 @flask_app.route("/slack/events", methods=["POST"])
@@ -70,5 +101,3 @@ if __name__ == "__main__":
     #chat_histories={}
     flask_app.run(port=3000)
     print("flask app running")
-
-
