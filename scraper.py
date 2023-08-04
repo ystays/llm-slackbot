@@ -111,8 +111,8 @@ def convert_to_text(x, separator='\n'):
 
 def access_html_and_parse(urls_csv_file_name):
     # Create the data_output directory if it does not already exist
-    if not os.path.exists('../output'):
-        os.makedirs('../output')
+    if not os.path.exists('./output'):
+        os.makedirs('./output')
 
     counter = 0
 
@@ -208,7 +208,7 @@ def access_html_and_parse(urls_csv_file_name):
                 filename = url.replace('https://', '').replace('http://', '').replace('/', '_').replace(':', '') + '.txt'
 
                 # Save the text to a file in the data_output directory
-                with open('../output/' + filename, 'w') as f:
+                with open('./output/' + filename, 'w') as f:
                     print(counter)
                     counter += 1
                     f.write(currPageText)
