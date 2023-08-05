@@ -71,8 +71,9 @@ def handle_direct_message(event, say):
                         
 
             i+=1
-        chatHistory = formattedChatHistory.reverse()
-        result, chat_history_new = query_similarity_search_QA_w_sources_OpenAI_Model(user_input, chatHistory)
+        formattedChatHistory.reverse()
+        print(formattedChatHistory)
+        result, chat_history_new = query_similarity_search_QA_w_sources_OpenAI_Model(user_input, formattedChatHistory)
         say(result)
 
 @flask_app.route("/slack/events", methods=["POST"])
