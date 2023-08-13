@@ -9,7 +9,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter, Language
 from langchain.document_loaders.sitemap import SitemapLoader
 
 
-def init_with_dir_and_upload_vectors(embeddings, file_dir='../output'):
+def init_with_dir_and_upload_vectors(embeddings, file_dir='./output'):
     loader = DirectoryLoader(file_dir, glob='**/*.txt', show_progress=True)
     documents = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=700, chunk_overlap=0)

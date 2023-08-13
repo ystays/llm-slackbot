@@ -220,6 +220,6 @@ def access_html_and_parse(urls_csv_file_name):
 if __name__ == "__main__":
     n = input("Are you sure you want to initialize scraping data? (y/n)")
     if n == 'y':
-        #save_all_urls('./csv/links_pdp.csv')
+        save_all_urls('./csv/links_pdp.csv')
         check_for_url_duplicates()
         access_html_and_parse('./csv/links_pdp.csv')
