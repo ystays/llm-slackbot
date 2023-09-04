@@ -1,12 +1,12 @@
-# saatva-slackbot
+# llm-slackbot
 
 ## Project Description
-Slack chatbot that scrapes product data from saatva.com and answers questions using GPT API calls. Written in Python, uses BeautifulSoup, Flask, langchain and pinecone.
+Slack chatbot that scrapes product data from website and answers questions using GPT API calls. Written in Python, uses BeautifulSoup, Flask, langchain and pinecone.
 
 ## Install and Run
 
 Steps:
-1. Scrape and parse HTML from saatva.com. To do so, run scraper.py. Ensure that all 3 functions `save_all_urls(), check_for_url_duplicates(), access_html_and_parse()` are set to run. This creates a csv file, links_pdp.csv, that contains all unique links to PDPs on saatva.com. A directory ,/output is also created to save the text (converted from HTML) found on each PDP. Data from each PDP is placed in its own file with a file name based on its URL.
+1. Scrape and parse HTML from a website. To do so, run scraper.py. Ensure that all 3 functions `save_all_urls(), check_for_url_duplicates(), access_html_and_parse()` are set to run. This creates a csv file, links_pdp.csv, that contains all unique links to PDPs on the website. A directory ,/output is also created to save the text (converted from HTML) found on each PDP. Data from each PDP is placed in its own file with a file name based on its URL.
 2. Create vector embeddings and upload to pinecone.io. To do so, run upload_pinecone.py. This uses the text data from the ../output directory. The query function from query_llm.py is called here.
 3. To run chatbot, execute the following commands in separate terminals:
 
